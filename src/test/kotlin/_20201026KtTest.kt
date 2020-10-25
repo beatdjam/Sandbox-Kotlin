@@ -39,4 +39,27 @@ internal class _20201026KtTest {
             { assertEquals(false, isRangeOverlap(target, Pair("2020/11/16", "2020/11/30"))) },
         )
     }
+
+
+    @Test
+    fun 重複するパターン_文字() {
+        val target = Pair("C","G")
+        assertAll(
+            { assertEquals(true, isRangeOverlap(target, Pair("A", "E"))) },
+            { assertEquals(true, isRangeOverlap(target, Pair("D", "H"))) },
+            { assertEquals(true, isRangeOverlap(target, Pair("G", "K"))) },
+            { assertEquals(true, isRangeOverlap(target, Pair("B", "H"))) },
+            { assertEquals(true, isRangeOverlap(target, Pair("E", "F"))) },
+            { assertEquals(true, isRangeOverlap(target, Pair("B", "C"))) },
+        )
+    }
+
+    @Test
+    fun 重複しないパターン_文字() {
+        val target = Pair("C","G")
+        assertAll(
+            { assertEquals(false, isRangeOverlap(target, Pair("A", "B"))) },
+            { assertEquals(false, isRangeOverlap(target, Pair("H", "I"))) },
+        )
+    }
 }
