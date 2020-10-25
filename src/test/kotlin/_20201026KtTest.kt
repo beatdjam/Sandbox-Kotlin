@@ -1,9 +1,42 @@
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertAll
 
 internal class _20201026KtTest {
 
     @Test
-    fun isRangeOverlap() {
-        
+    fun 重複するパターン() {
+        val target = Pair("2020/10/05","2020/11/15")
+
+        // 各テストケースのパターン
+        //   t---t
+        // 1---1
+        //    2---2
+        //       3---3
+        //  4-----4
+        //     55
+        //  66
+        assertAll(
+            { assertEquals(true, isRangeOverlap(target, Pair("2020/09/01", "2020/10/31"))) },
+            { assertEquals(true, isRangeOverlap(target, Pair("2020/10/10", "2020/11/20"))) },
+            { assertEquals(true, isRangeOverlap(target, Pair("2020/11/15", "2020/12/10"))) },
+            { assertEquals(true, isRangeOverlap(target, Pair("2020/10/01", "2020/11/30"))) },
+            { assertEquals(true, isRangeOverlap(target, Pair("2020/10/15", "2020/11/05"))) },
+            { assertEquals(true, isRangeOverlap(target, Pair("2020/10/01", "2020/10/05"))) },
+        )
+    }
+
+    @Test
+    fun 重複しないパターン() {
+        val target = Pair("2020/10/05","2020/11/15")
+
+        // 各テストケースのパターン
+        //    t---t
+        // 1-1
+        //         2-2
+        assertAll(
+            { assertEquals(false, isRangeOverlap(target, Pair("2020/09/01", "2020/10/04"))) },
+            { assertEquals(false, isRangeOverlap(target, Pair("2020/11/16", "2020/11/30"))) },
+        )
     }
 }
