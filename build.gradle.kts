@@ -9,9 +9,17 @@ repositories {
     mavenCentral()
     jcenter()
 }
+
+tasks.withType<Test> {
+    useJUnitPlatform {
+        includeEngines("junit-jupiter")
+    }
+}
+
 dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")
 }
+
 tasks.withType<KotlinCompile>() {
     kotlinOptions.jvmTarget = "1.8"
 }
