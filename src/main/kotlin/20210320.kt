@@ -115,12 +115,12 @@ private fun crop(image: BufferedImage, width: Int, height: Int): BufferedImage? 
     return when {
         // 横長の画像を縦長のViewに表示する場合
         isHorizontalImage && !isHorizontalView -> {
-            val x = floor(image.width.toDouble() / 2 - width.toDouble() / 2).toInt()
+            val x = (image.width.toDouble() / 2 - width.toDouble() / 2).toInt()
             image.getSubimage(x, 0, width, height)
         }
         // 縦長の画像を縦長のViewに表示する場合
         else -> {
-            val y = floor(image.height.toDouble() / 2 - height.toDouble() / 2).toInt()
+            val y = (image.height.toDouble() / 2 - height.toDouble() / 2).toInt()
             image.getSubimage(0, y, width, height)
         }
     }
