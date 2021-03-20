@@ -86,11 +86,11 @@ fun getAutoResizedImage(imageBytes: InputStream, width: Int, height: Int): ByteA
  * @param height
  * @return
  */
-private fun resize( image: BufferedImage, width: Int, height: Int ): BufferedImage {
+private fun resize(image: BufferedImage, width: Int, height: Int): BufferedImage {
     // 横幅・縦幅の比率を計算して、大きい方を基準にリサイズする
     val widthScale = width.toDouble() / image.width.toDouble()
-    val heightScale =height.toDouble() / image.height.toDouble()
-    val scale = if(widthScale > heightScale) widthScale else heightScale
+    val heightScale = height.toDouble() / image.height.toDouble()
+    val scale = if (widthScale > heightScale) widthScale else heightScale
 
     val resizeWidth = ceil(image.width * scale).toInt()
     val resizeHeight = ceil(image.height * scale).toInt()
