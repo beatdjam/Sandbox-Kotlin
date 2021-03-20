@@ -1,7 +1,6 @@
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
 import javax.imageio.ImageIO
@@ -30,7 +29,7 @@ fun main() {
         // 横長
         val imageBytes = getImageBytes(value)
         size.forEach { (sizeName, sizeValue) ->
-            val result = getAutoResizedImage(imageBytes.inputStream(), sizeValue.first, sizeValue.second)
+            val result = getAutoResizedImage(imageBytes, sizeValue.first, sizeValue.second)
             File("$name to ${sizeName}.png").writeBytes(result)
         }
     }
@@ -61,9 +60,9 @@ fun getImageBytes(url: String): ByteArray {
  * @param height 出力したい画像の縦幅
  * @return
  */
-fun getAutoResizedImage(imageBytes: InputStream, width: Int, height: Int): ByteArray {
+fun getAutoResizedImage(imageBytes: ByteArray, width: Int, height: Int): ByteArray {
     // 画像読み込み
-    val originalImage = ImageIO.read(imageBytes)
+    val originalImage = ImageIO.read(imageBytes.inputStream())
 
     // リサイズ
     val resizedImage = resize(originalImage, width, height)
