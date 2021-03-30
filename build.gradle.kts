@@ -18,6 +18,7 @@ tasks.withType<Test> {
 
 dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")
+    implementation("org.apache.pdfbox:pdfbox:2.0.22")
 }
 
 tasks.withType<KotlinCompile>() {
