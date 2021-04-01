@@ -21,23 +21,21 @@ private fun openPDF(): ByteArrayInputStream {
     val template = object : Any() {}.javaClass
         .classLoader
         .getResourceAsStream("sample.pdf")
-
-    // ByteArrayOutputStreamに書き込んでByteArrayInputStreamに変換する
-    return PDDocument.load(template).let { doc ->
-        val out = ByteArrayOutputStream()
-        doc.save(out)
-        doc.close()
-        ByteArrayInputStream(out.toByteArray())
-    }
+    return editDocument(PDDocument.load(template))
 }
 
-private fun createNewPDF() = PDDocument().let { doc ->
-    // A4のページを追加
-    val page = PDPage(PDRectangle.A4)
-    doc.addPage(page)
+private fun createNewPDF(): ByteArrayInputStream {
+    val doc = PDDocument().also {
+        // A4のページを追加
+        it.addPage(PDPage(PDRectangle.A4))
+    }
+    return editDocument(doc)
+}
 
+fun editDocument(doc: PDDocument): ByteArrayInputStream {
     // フォントの指定
     val font = PDType1Font.HELVETICA_BOLD
+    val page = doc.pages[0]
 
     // 指定のページオブジェクトに文字の印字
     PDPageContentStream(doc, page).use { cs ->
@@ -52,5 +50,5 @@ private fun createNewPDF() = PDDocument().let { doc ->
     val out = ByteArrayOutputStream()
     doc.save(out)
     doc.close()
-    ByteArrayInputStream(out.toByteArray())
+    return ByteArrayInputStream(out.toByteArray())
 }
