@@ -1,5 +1,7 @@
 package main.kotlin.pdfbox
 
+import org.apache.pdfbox.cos.COSDictionary
+import org.apache.pdfbox.cos.COSName
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.pdmodel.PDPage
 import org.apache.pdfbox.pdmodel.PDPageContentStream
@@ -45,12 +47,13 @@ fun editDocument(doc: PDDocument): ByteArrayInputStream {
     // フォントの指定
     val font = PDType1Font.HELVETICA_BOLD
 
-    // 指定のページオブジェクトに文字の印字
-    val page = doc.pages[0]
-    PDPageContentStream(doc, page).use { cs ->
-        cs.writeText("Hello World", font, 12f, 200f, 500f)
+    // とりあえずすべてのページに同じ内容を書き込む
+    doc.pages.forEach { page ->
+        PDPageContentStream(doc, page).use { cs ->
+            // 文字の印字
+            cs.writeText("Hello World", font, 12f, 200f, 500f)
+        }
     }
-
     return doc.saveToByteArrayInputStream()
 }
 
@@ -94,4 +97,19 @@ fun PDDocument.saveToByteArrayInputStream(): ByteArrayInputStream {
     this.save(out)
     this.close()
     return ByteArrayInputStream(out.toByteArray())
+}
+
+/**
+ * 指定したページを複製して末尾に指定数追加する
+ *
+ * @param index
+ * @param size
+ */
+fun PDDocument.clonePage(index: Int, size: Int = 1) {
+    // 指定のページを読み込む
+    val page = this.pages[index]
+    // 読み込んだページの構成情報を複製して注釈情報を削除
+    val dict = COSDictionary(page.cosObject).also { it.removeItem(COSName.ANNOTS) }
+    // 元のPDFにページとして追加する
+    repeat(size) { this.importPage(PDPage(dict)) }
 }
