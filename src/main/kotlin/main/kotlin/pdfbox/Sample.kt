@@ -113,3 +113,17 @@ fun PDDocument.clonePage(index: Int, size: Int = 1) {
     // 元のPDFにページとして追加する
     repeat(size) { this.importPage(PDPage(dict)) }
 }
+
+/**
+ * 渡された文字列が当該フォントで描画できるかを確認
+ *
+ * @param c
+ * @return
+ */
+fun PDFont.isWritableChar(c: Char): Boolean = try {
+    this.encode(c.toString())
+    true
+} catch (e: IllegalArgumentException) {
+    // 未収録の文字列はIllegalArgumentExceptionを吐くのでfalseで返す
+    false
+}
