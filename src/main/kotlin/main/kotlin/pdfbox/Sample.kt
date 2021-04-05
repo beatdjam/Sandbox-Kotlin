@@ -8,6 +8,7 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream
 import org.apache.pdfbox.pdmodel.common.PDRectangle
 import org.apache.pdfbox.pdmodel.font.PDFont
 import org.apache.pdfbox.pdmodel.font.PDType1Font
+import org.apache.pdfbox.util.Matrix
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -50,8 +51,29 @@ fun editDocument(doc: PDDocument): ByteArrayInputStream {
     // とりあえずすべてのページに同じ内容を書き込む
     doc.pages.forEach { page ->
         PDPageContentStream(doc, page).use { cs ->
-            // 文字の印字
-            cs.writeText("Hello World", font, 12f, 200f, 500f)
+            cs.saveGraphicsState()
+
+            // 描画領域の中心を算出する
+            val tx: Float = (page.mediaBox.lowerLeftX + page.mediaBox.upperRightX) / 2
+            val ty: Float = (page.mediaBox.lowerLeftY + page.mediaBox.upperRightY) / 2
+            cs.rotate(180.0, tx, ty)
+            // 中心に文字を描画
+            cs.writeText(
+                "Hello World",
+                font,
+                12f,
+                page.mediaBox.width / 2,
+                page.mediaBox.height / 2
+            )
+            cs.restoreGraphicsState()
+            // 描画の向きを戻して再描画
+            cs.writeText(
+                "Hello World",
+                font,
+                12f,
+                page.mediaBox.width / 2,
+                page.mediaBox.height / 2
+            )
         }
     }
     return doc.saveToByteArrayInputStream()
@@ -85,6 +107,23 @@ fun PDPageContentStream.writeText(s: String, font: PDFont, fontSize: Float, tx: 
     this.newLineAtOffset(tx, ty)
     this.showText(s)
     this.endText()
+}
+
+/**
+ * 与えられた中心座標と角度で描画位置を回転させる
+ * 回転させた結果ページ外に文字が出ても考慮されないため注意
+ *
+ * @param degree
+ * @param tx
+ * @param ty
+ */
+fun PDPageContentStream.rotate(degree: Double, tx: Float, ty: Float) {
+    // 原点を中心に移動させる
+    this.transform(Matrix.getTranslateInstance(tx, ty))
+    // 中心を軸に描画領域の角度を変化させる
+    this.transform(Matrix.getRotateInstance(Math.toRadians(degree), 0f, 0f))
+    // 原点を最初に移動させたのと同じだけ戻す
+    this.transform(Matrix.getTranslateInstance(-tx, -ty))
 }
 
 /**
