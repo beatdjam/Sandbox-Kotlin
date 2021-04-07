@@ -166,3 +166,13 @@ fun PDFont.isWritableChar(c: Char): Boolean = try {
     // 未収録の文字列はIllegalArgumentExceptionを吐くのでfalseで返す
     false
 }
+
+/**
+ * 渡された文字列の長さを取得
+ *
+ * @param text
+ * @param fontSize
+ * @return
+ */
+fun PDFont.getWriteWidth(text: String, fontSize: Float): Float =
+    this.getStringWidth(text) / 1000 * fontSize
