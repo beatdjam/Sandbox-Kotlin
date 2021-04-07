@@ -1,4 +1,4 @@
-package main.kotlin.pdfbox
+package pdfbox
 
 import org.apache.pdfbox.cos.COSDictionary
 import org.apache.pdfbox.cos.COSName
@@ -74,6 +74,16 @@ fun editDocument(doc: PDDocument): ByteArrayInputStream {
                 page.mediaBox.width / 2,
                 page.mediaBox.height / 2
             )
+            val str =
+                """To obtain the electronic dictionary which pronounces even a long sentence in an easy-to-hear state by preventing the pronunciation from being broken halfway irrelevantly to the meaning as to a long example sentence and a phrase entered into a dictionary and an English equivalent in a Japanese- English dictionary."""
+            cs.writeWrapedText(
+                str,
+                font,
+                12f,
+                0f,
+                page.mediaBox.height - 10,
+                300f,
+            )
         }
     }
     return doc.saveToByteArrayInputStream()
@@ -107,6 +117,73 @@ fun PDPageContentStream.writeText(s: String, font: PDFont, fontSize: Float, tx: 
     this.newLineAtOffset(tx, ty)
     this.showText(s)
     this.endText()
+}
+
+/**
+ * 指定幅で折返しのあるテキストを描画する
+ *
+ * @param s
+ * @param font
+ * @param fontSize
+ * @param tx
+ * @param ty
+ * @param width
+ * @param lineSpace
+ */
+fun PDPageContentStream.writeWrapedText(
+    s: String,
+    font: PDFont,
+    fontSize: Float,
+    tx: Float,
+    ty: Float,
+    width: Float,
+    lineSpace: Float = 0f,
+) {
+    val lines = createParagraphLists(s, font, fontSize, width)
+
+    this.beginText()
+    // テキストの原点を指定
+    this.newLineAtOffset(tx, ty)
+    this.setFont(font, fontSize)
+
+    // フォントの高さ分改行しながら1行ずつテキストを印字する
+    // 最大表示行かつテキストがそれ以上に存在する場合は、末尾を…で埋めて省略する
+    lines.forEach {
+        this.showText(it)
+        this.setLeading(fontSize + lineSpace)
+        this.newLine()
+    }
+    this.endText()
+}
+
+/**
+ * 折返し用の文字列のリストを生成します
+ *
+ * @param text
+ * @param font
+ * @param fontSize
+ * @param width
+ * @return
+ */
+private fun createParagraphLists(
+    text: String,
+    font: PDFont,
+    fontSize: Float,
+    width: Float
+): List<String> {
+    var tempIndex = 0
+    return text.indices.mapNotNull {
+        // 指定の文字幅に収まる文字数を計算してテキストを分割する
+        if (tempIndex > it) return@mapNotNull null
+        if (font.getWriteWidth(text.substring(tempIndex..it), fontSize) > width) {
+            val result = text.substring(tempIndex until it)
+            tempIndex = it
+            return@mapNotNull result
+        }
+
+        // 末尾のテキストはすべて出力する
+        if (it == text.length - 1) text.substring(tempIndex) else null
+    }
 }
 
 /**
