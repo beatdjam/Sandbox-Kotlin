@@ -58,22 +58,10 @@ fun editDocument(doc: PDDocument): ByteArrayInputStream {
             val ty: Float = (page.mediaBox.lowerLeftY + page.mediaBox.upperRightY) / 2
             cs.rotate(180.0, tx, ty)
             // 中心に文字を描画
-            cs.writeText(
-                "Hello World",
-                font,
-                12f,
-                page.mediaBox.width / 2,
-                page.mediaBox.height / 2
-            )
+            cs.writeText("Hello World", font, 12f, tx, ty)
             cs.restoreGraphicsState()
             // 描画の向きを戻して再描画
-            cs.writeText(
-                "Hello World",
-                font,
-                12f,
-                page.mediaBox.width / 2,
-                page.mediaBox.height / 2
-            )
+            cs.writeText("Hello World", font, 12f, tx, ty)
             val str =
                 """To obtain the electronic dictionary which pronounces even a long sentence in an easy-to-hear state by preventing the pronunciation from being broken halfway irrelevantly to the meaning as to a long example sentence and a phrase entered into a dictionary and an English equivalent in a Japanese- English dictionary."""
             cs.writeWrapedText(
