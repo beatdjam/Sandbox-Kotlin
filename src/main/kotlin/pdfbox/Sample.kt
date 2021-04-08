@@ -150,7 +150,7 @@ fun PDPageContentStream.writeWrapedText(
     // 最大表示行かつテキストがそれ以上に存在する場合は、末尾を…で埋めて省略する
     lines.forEach {
         this.showText(it)
-        this.setLeading(fontSize + lineSpace)
+        this.setLeading(font.height(fontSize) + lineSpace)
         this.newLine()
     }
     this.endText()
@@ -175,7 +175,7 @@ private fun createParagraphLists(
     return text.indices.mapNotNull {
         // 指定の文字幅に収まる文字数を計算してテキストを分割する
         if (tempIndex > it) return@mapNotNull null
-        if (font.getWriteWidth(text.substring(tempIndex..it), fontSize) > width) {
+        if (font.width(text.substring(tempIndex..it), fontSize) > width) {
             val result = text.substring(tempIndex until it)
             tempIndex = it
             return@mapNotNull result
@@ -245,11 +245,20 @@ fun PDFont.isWritableChar(c: Char): Boolean = try {
 }
 
 /**
- * 渡された文字列の長さを取得
+ * 渡された文字列のフォントサイズに対応する幅を取得
  *
  * @param text
  * @param fontSize
  * @return
  */
-fun PDFont.getWriteWidth(text: String, fontSize: Float): Float =
+fun PDFont.width(text: String, fontSize: Float): Float =
     this.getStringWidth(text) / 1000 * fontSize
+
+/**
+ * フォントサイズに対応する文字列の高さを取得
+ *
+ * @param fontSize
+ * @return
+ */
+fun PDFont.height(fontSize: Float): Float =
+    this.fontDescriptor.fontBoundingBox.height / 1000 * fontSize
