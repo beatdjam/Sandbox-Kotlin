@@ -128,7 +128,6 @@ fun PDPageContentStream.writeTextAlignRight(
     this.writeText(s, font, fontSize, tx - font.width(s, fontSize), ty)
 }
 
-
 /**
  * 指定幅で折返しのあるテキストを描画する
  *
@@ -172,11 +171,12 @@ private fun createParagraphLists(
 ): List<String> {
     var tempIndex = 0
     return text.indices.mapNotNull {
+        // 指定の文字幅に収まる文字数を計算してテキストを分割する
         when {
-            // 指定の文字幅に収まる文字数を計算してテキストを分割する
             font.width(text.substring(tempIndex..it), fontSize) > width -> {
+                val result = text.substring(tempIndex until it)
                 tempIndex = it
-                text.substring(tempIndex until it)
+                result
             }
             it == text.length - 1 -> text.substring(tempIndex)
             else -> null
