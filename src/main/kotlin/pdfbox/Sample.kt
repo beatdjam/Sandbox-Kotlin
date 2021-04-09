@@ -150,16 +150,15 @@ private fun createParagraphLists(
 ): List<String> {
     var tempIndex = 0
     return text.indices.mapNotNull {
-        // 指定の文字幅に収まる文字数を計算してテキストを分割する
-        if (tempIndex > it) return@mapNotNull null
-        if (font.width(text.substring(tempIndex..it), fontSize) > width) {
-            val result = text.substring(tempIndex until it)
-            tempIndex = it
-            return@mapNotNull result
+        when {
+            // 指定の文字幅に収まる文字数を計算してテキストを分割する
+            font.width(text.substring(tempIndex..it), fontSize) > width -> {
+                tempIndex = it
+                text.substring(tempIndex until it)
+            }
+            it == text.length - 1 -> text.substring(tempIndex)
+            else -> null
         }
-
-        // 末尾のテキストはすべて出力する
-        if (it == text.length - 1) text.substring(tempIndex) else null
     }
 }
 
