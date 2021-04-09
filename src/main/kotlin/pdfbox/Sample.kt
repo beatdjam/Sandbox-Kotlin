@@ -127,21 +127,10 @@ fun PDPageContentStream.writeWrapedText(
     width: Float,
     lineSpace: Float = 0f,
 ) {
-    val lines = createParagraphLists(s, font, fontSize, width)
-
-    this.beginText()
-    // テキストの原点を指定
-    this.newLineAtOffset(tx, ty)
-    this.setFont(font, fontSize)
-
-    // フォントの高さ分改行しながら1行ずつテキストを印字する
-    // 最大表示行かつテキストがそれ以上に存在する場合は、末尾を…で埋めて省略する
-    lines.forEach {
-        this.showText(it)
-        this.setLeading(font.height(fontSize) + lineSpace)
-        this.newLine()
-    }
-    this.endText()
+    // フォントの高さ+行間分改行しながら1行ずつテキストを印字する
+    val newLineOffset = font.height(fontSize) + lineSpace
+    createParagraphLists(s, font, fontSize, width)
+        .forEachIndexed { i, v -> this.writeText(v, font, fontSize, tx, ty - newLineOffset * i) }
 }
 
 /**
