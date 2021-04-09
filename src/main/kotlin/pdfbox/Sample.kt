@@ -62,6 +62,8 @@ fun editDocument(doc: PDDocument): ByteArrayInputStream {
             cs.restoreGraphicsState()
             // 描画の向きを戻して再描画
             cs.writeText("Hello World", font, 12f, tx, ty)
+            // 右寄せで文字列を描画
+            cs.writeTextAlignRight("Hello World", font, 12f, tx, ty + 15)
             val str =
                 """To obtain the electronic dictionary which pronounces even a long sentence in an easy-to-hear state by preventing the pronunciation from being broken halfway irrelevantly to the meaning as to a long example sentence and a phrase entered into a dictionary and an English equivalent in a Japanese- English dictionary."""
             cs.writeWrapedText(
@@ -106,6 +108,26 @@ fun PDPageContentStream.writeText(s: String, font: PDFont, fontSize: Float, tx: 
     this.showText(s)
     this.endText()
 }
+
+/**
+ * 指定した座標を文字列の終端として右寄せで文字を描画する
+ *
+ * @param s
+ * @param font
+ * @param fontSize
+ * @param tx
+ * @param ty
+ */
+fun PDPageContentStream.writeTextAlignRight(
+    s: String,
+    font: PDFont,
+    fontSize: Float,
+    tx: Float,
+    ty: Float
+) {
+    this.writeText(s, font, fontSize, tx - font.width(s, fontSize), ty)
+}
+
 
 /**
  * 指定幅で折返しのあるテキストを描画する
