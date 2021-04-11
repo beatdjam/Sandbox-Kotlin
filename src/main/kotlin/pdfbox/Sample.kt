@@ -4,6 +4,7 @@ import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.pdmodel.PDPage
 import org.apache.pdfbox.pdmodel.PDPageContentStream
 import org.apache.pdfbox.pdmodel.common.PDRectangle
+import org.apache.pdfbox.pdmodel.font.PDType0Font
 import org.apache.pdfbox.pdmodel.font.PDType1Font
 import java.io.ByteArrayInputStream
 import java.io.File
@@ -42,7 +43,10 @@ private fun createNewPDF() {
 fun editDocument(doc: PDDocument): ByteArrayInputStream {
     // フォントの指定
     val font = PDType1Font.HELVETICA_BOLD
-
+    val jpFont = PDType0Font.load(
+        doc,
+        object : Any() {}.javaClass.classLoader.getResourceAsStream("ipag.ttf")
+    )
     // とりあえずすべてのページに同じ内容を書き込む
     doc.pages.forEach { page ->
         PDPageContentStream(doc, page).use { cs ->
@@ -59,12 +63,18 @@ fun editDocument(doc: PDDocument): ByteArrayInputStream {
             cs.writeText("Hello World", font, 12f, tx, ty)
             // 右寄せで文字列を描画
             cs.writeTextAlignRight("Hello World", font, 12f, tx, ty + 15)
+            // 中央寄せで文字列を描画
             cs.writeTextAlignCenter("Hello World", font, 12f, tx, 20f)
 
+            // 印字文字色変更
             cs.setFontColorByColorCode("#F15B5B")
             val str =
                 """To obtain the electronic dictionary which pronounces even a long sentence in an easy-to-hear state by preventing the pronunciation from being broken halfway irrelevantly to the meaning as to a long example sentence and a phrase entered into a dictionary and an English equivalent in a Japanese- English dictionary."""
             cs.writeWrapedText(str, font, 12f, 0f, page.mediaBox.height - 10, 300f)
+
+            cs.setFontColorByColorCode("#000000")
+            // 日本語を描画
+            cs.writeText("IPA Pゴシック", jpFont, 12f, tx, 40f)
         }
     }
     return doc.saveToByteArrayInputStream()
