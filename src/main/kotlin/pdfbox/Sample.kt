@@ -77,6 +77,11 @@ fun editDocument(doc: PDDocument): ByteArrayInputStream {
             cs.writeText("IPA Pゴシック", jpFont, 12f, tx, 40f)
         }
     }
+
+    // 指定し指定したindexのページを指定数末尾に追加する
+    doc.clonePage(0, 3)
+
+    // 書き込んだドキュメントをByteArrayInputStreamに変換
     return doc.saveToByteArrayInputStream()
 }
 
