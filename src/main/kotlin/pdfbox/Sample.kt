@@ -24,7 +24,7 @@ private fun openPDF() {
     // 指定したリソース配下のディレクトリに存在するファイルを読み取って開く
     val template = object : Any() {}.javaClass
         .classLoader
-        .getResourceAsStream("sample.pdf")
+        .getResourceAsStream("pdfbox/sample.pdf")
     val doc = PDDocument.load(template)
     // 指定したファイル名でドキュメントを保存
     File("output.pdf").writeBytes(doc.saveToByteArrayInputStream().readBytes())
@@ -53,7 +53,7 @@ fun editDocument(doc: PDDocument): ByteArrayInputStream {
     val font = PDType1Font.HELVETICA_BOLD
     val jpFont = PDType0Font.load(
         doc,
-        object : Any() {}.javaClass.classLoader.getResourceAsStream("ipag.ttf")
+        object : Any() {}.javaClass.classLoader.getResourceAsStream("pdfbox/ipag.ttf")
     )
 
     // とりあえずすべてのページに同じ内容を書き込む
@@ -94,7 +94,7 @@ fun editDocument(doc: PDDocument): ByteArrayInputStream {
             cs.writeText("IPA Pゴシック", jpFont, 12f, tx, 40f)
 
             // ローカルの画像を書き込む
-            cs.drawImageFromFilePath(doc, "no_image_square.jpg", 0f, 0f)
+            cs.drawImageFromFilePath(doc, "pdfbox/no_image_square.jpg", 0f, 0f)
 
             // 画像をByteArrayで取得
             val webImg =
