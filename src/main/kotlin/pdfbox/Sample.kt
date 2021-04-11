@@ -19,8 +19,11 @@ fun main() {
  *
  */
 private fun openPDF() {
-    // resourcesから既存のPDFを読み込む
-    val doc = openPDF("sample.pdf")
+    // 指定したリソース配下のディレクトリに存在するファイルを読み取って開く
+    val template = object : Any() {}.javaClass
+        .classLoader
+        .getResourceAsStream("sample.pdf")
+    val doc = PDDocument.load(template)
     // 指定したファイル名でドキュメントを保存
     File("output.pdf").writeBytes(doc.saveToByteArrayInputStream().readBytes())
 }
@@ -95,17 +98,4 @@ fun editDocument(doc: PDDocument): ByteArrayInputStream {
 
     // 書き込んだドキュメントをByteArrayInputStreamに変換
     return doc.saveToByteArrayInputStream()
-}
-
-/**
- * 指定したリソース配下のディレクトリに存在するファイルを読み取ってPDFとして開く
- *
- * @param path
- * @return
- */
-fun openPDF(path: String): PDDocument {
-    val template = object : Any() {}.javaClass
-        .classLoader
-        .getResourceAsStream(path)
-    return PDDocument.load(template)
 }
