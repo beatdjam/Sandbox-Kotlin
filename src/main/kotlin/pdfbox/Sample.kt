@@ -90,6 +90,9 @@ fun editDocument(doc: PDDocument): ByteArrayInputStream {
 
             // 日本語を描画(日本語用のフォントを使用)
             cs.writeText("IPA Pゴシック", jpFont, 12f, tx, 40f)
+
+            // ローカルの画像を書き込む
+            cs.drawImageFromFilePath("no_image_square.jpg", doc, 0f, 0f)
         }
     }
 

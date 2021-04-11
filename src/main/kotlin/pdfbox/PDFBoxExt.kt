@@ -6,6 +6,7 @@ import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.pdmodel.PDPage
 import org.apache.pdfbox.pdmodel.PDPageContentStream
 import org.apache.pdfbox.pdmodel.font.PDFont
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject
 import org.apache.pdfbox.util.Matrix
 import java.awt.Color
 import java.io.ByteArrayInputStream
@@ -126,6 +127,21 @@ private fun createParagraphLists(
 }
 
 /**
+ * ファイルパスから画像を取得し書き込む
+ *
+ * @param path
+ * @param doc
+ * @param tx
+ * @param ty
+ */
+fun PDPageContentStream.drawImageFromFilePath(path: String, doc: PDDocument, tx: Float, ty: Float) {
+    // ローカルの画像を書き込む
+    val realPath = object : Any() {}.javaClass.classLoader.getResource(path)?.path ?: ""
+    val img = PDImageXObject.createFromFile(realPath, doc)
+    this.drawImage(img, tx, ty)
+}
+
+/**
  * 与えられた中心座標と角度で描画位置を回転させる
  * 回転させた結果ページ外に文字が出ても考慮されないため注意
  *
@@ -191,6 +207,7 @@ fun PDFont.isWritableChar(c: Char): Boolean = try {
 fun PDPageContentStream.setFontColorByColorCode(code: String) {
     this.setNonStrokingColor(Color.decode(code))
 }
+
 
 /**
  * 渡された文字列のフォントサイズに対応する幅を取得
