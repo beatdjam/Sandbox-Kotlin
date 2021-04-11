@@ -64,16 +64,10 @@ fun editDocument(doc: PDDocument): ByteArrayInputStream {
             cs.writeText("Hello World", font, 12f, tx, ty)
             // 右寄せで文字列を描画
             cs.writeTextAlignRight("Hello World", font, 12f, tx, ty + 15)
+            cs.writeTextAlignCenter("Hello World", font, 12f, tx, 20f)
             val str =
                 """To obtain the electronic dictionary which pronounces even a long sentence in an easy-to-hear state by preventing the pronunciation from being broken halfway irrelevantly to the meaning as to a long example sentence and a phrase entered into a dictionary and an English equivalent in a Japanese- English dictionary."""
-            cs.writeWrapedText(
-                str,
-                font,
-                12f,
-                0f,
-                page.mediaBox.height - 10,
-                300f,
-            )
+            cs.writeWrapedText(str, font, 12f, 0f, page.mediaBox.height - 10, 300f)
         }
     }
     return doc.saveToByteArrayInputStream()
@@ -126,6 +120,28 @@ fun PDPageContentStream.writeTextAlignRight(
     ty: Float
 ) {
     this.writeText(s, font, fontSize, tx - font.width(s, fontSize), ty)
+}
+
+/**
+ * 指定した座標を文字列の中心として中央寄せで文字を描画する
+ *
+ * @param s
+ * @param font
+ * @param fontSize
+ * @param tx
+ * @param ty
+ */
+fun PDPageContentStream.writeTextAlignCenter(
+    s: String,
+    font: PDFont,
+    fontSize: Float,
+    tx: Float,
+    ty: Float
+) {
+    // 印字する文字の幅・高さの半分を取得
+    val halfWidth = font.getStringWidth(s) / 1000 * fontSize / 2
+    val halfHeight = (font.fontDescriptor.fontBoundingBox.height / 1000 * fontSize / 2)
+    this.writeText(s, font, fontSize, tx - halfWidth, ty - halfHeight)
 }
 
 /**
