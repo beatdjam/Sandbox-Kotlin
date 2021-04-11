@@ -134,10 +134,30 @@ private fun createParagraphLists(
  * @param tx
  * @param ty
  */
-fun PDPageContentStream.drawImageFromFilePath(path: String, doc: PDDocument, tx: Float, ty: Float) {
+fun PDPageContentStream.drawImageFromFilePath(doc: PDDocument, path: String, tx: Float, ty: Float) {
     // ローカルの画像を書き込む
     val realPath = object : Any() {}.javaClass.classLoader.getResource(path)?.path ?: ""
     val img = PDImageXObject.createFromFile(realPath, doc)
+    this.drawImage(img, tx, ty)
+}
+
+/**
+ * ByteArrayから画像を取得し書き込む
+ *
+ * @param doc
+ * @param byteArray
+ * @param tx
+ * @param ty
+ */
+fun PDPageContentStream.drawImageFromByteArray(
+    doc: PDDocument,
+    byteArray: ByteArray,
+    tx: Float,
+    ty: Float
+) {
+    // 貼り付け用のオブジェクトに変換
+    val img = PDImageXObject.createFromByteArray(doc, byteArray, null)
+    // 描画
     this.drawImage(img, tx, ty)
 }
 

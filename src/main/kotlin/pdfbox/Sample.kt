@@ -8,6 +8,8 @@ import org.apache.pdfbox.pdmodel.font.PDType0Font
 import org.apache.pdfbox.pdmodel.font.PDType1Font
 import java.io.ByteArrayInputStream
 import java.io.File
+import java.net.HttpURLConnection
+import java.net.URL
 
 fun main() {
     createNewPDF()
@@ -92,7 +94,13 @@ fun editDocument(doc: PDDocument): ByteArrayInputStream {
             cs.writeText("IPA Pゴシック", jpFont, 12f, tx, 40f)
 
             // ローカルの画像を書き込む
-            cs.drawImageFromFilePath("no_image_square.jpg", doc, 0f, 0f)
+            cs.drawImageFromFilePath(doc, "no_image_square.jpg", 0f, 0f)
+
+            // 画像をByteArrayで取得
+            val webImg =
+                getImageBytes("https://3.bp.blogspot.com/-21QBJvnhEbI/V1z80GVAzmI/AAAAAAAA7MY/n_R3eCspCzgdgH3rk0L8gHGQGNw4OOILwCLcB/s800/character_cthulhu_kuturufu.png")
+            // 描画
+            cs.drawImageFromByteArray(doc, webImg, 100f, 100f)
         }
     }
 
@@ -101,4 +109,21 @@ fun editDocument(doc: PDDocument): ByteArrayInputStream {
 
     // 書き込んだドキュメントをByteArrayInputStreamに変換
     return doc.saveToByteArrayInputStream()
+}
+
+/**
+ * URLから画像をByteArrayで取得する
+ *
+ * @param url
+ * @return
+ */
+private fun getImageBytes(url: String): ByteArray {
+    lateinit var conn: HttpURLConnection
+    return try {
+        conn = URL(url).openConnection() as HttpURLConnection
+        conn.requestMethod = "GET"
+        conn.inputStream.readBytes()
+    } finally {
+        conn.disconnect()
+    }
 }
