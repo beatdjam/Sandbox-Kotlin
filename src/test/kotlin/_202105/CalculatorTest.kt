@@ -1,4 +1,4 @@
-package _20210501
+package _202105
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
