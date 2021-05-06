@@ -51,6 +51,7 @@ private fun createNewPDF() {
 fun editDocument(doc: PDDocument): ByteArrayInputStream {
     // フォントの指定
     val font = PDType1Font.HELVETICA_BOLD
+    // 日本語描画用のフォント読み込み(IPA Pゴシック)
     val jpFont = PDType0Font.load(
         doc,
         object : Any() {}.javaClass.classLoader.getResourceAsStream("pdfbox/ipag.ttf")
