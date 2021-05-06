@@ -19,6 +19,7 @@ tasks.withType<Test> {
 
 dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")
+    testImplementation("io.mockk:mockk:1.10.6")
     implementation("org.apache.pdfbox:pdfbox:2.0.22")
     implementation(kotlin("stdlib-jdk8"))
 }
