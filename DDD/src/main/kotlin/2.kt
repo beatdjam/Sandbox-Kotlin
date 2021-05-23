@@ -7,7 +7,7 @@ fun main() {
 value class FirstName(private val value: String) {
     init {
         require(value.isNotEmpty()) { "1文字以上である必要があります" }
-        require(!Regex("^[a-zA-Z]+$").containsMatchIn(value)) { "利用不可の文字が含まれています: $value" }
+        require(Regex("^[a-zA-Z]+$").containsMatchIn(value)) { "利用不可の文字が含まれています: $value" }
     }
 }
 
@@ -15,7 +15,7 @@ value class FirstName(private val value: String) {
 value class LastName(private val value: String){
     init {
         require(value.isNotEmpty()) { "1文字以上である必要があります" }
-        require(!Regex("^[a-zA-Z]+$").containsMatchIn(value)) { "利用不可の文字が含まれています: $value" }
+        require(Regex("^[a-zA-Z]+$").containsMatchIn(value)) { "利用不可の文字が含まれています: $value" }
     }
 }
 
