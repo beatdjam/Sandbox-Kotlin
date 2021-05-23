@@ -9,6 +9,7 @@ fun main() {
     val result = myMoney.add(allowance)
     println(result)
 
+    // 通貨単位が違うのでエラーになる
     try {
         val jpy = Money(1000.0, "JPY")
         val usd = Money(3000.0, "USD")
@@ -41,4 +42,9 @@ data class Money(val amount :Double, val currency : String) {
         require(this.currency == arg.currency) {"通貨単位が異なります"}
         return this.copy(amount = this.amount + arg.amount)
     }
+}
+
+// 型番を表す例 2.35
+data class ModelNumber(private val productCode : String, private val branch : String, private val lot : String) {
+    override fun toString(): String = "$productCode-$branch-$lot"
 }
