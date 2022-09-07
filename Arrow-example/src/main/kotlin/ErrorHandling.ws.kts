@@ -1,7 +1,8 @@
 import ErrorHandling_ws.CookingException.*
-import arrow.core.Either
+import arrow.core.*
 import arrow.core.continuations.either
 import arrow.core.continuations.nullable
+import arrow.typeclasses.Semigroup
 import kotlinx.coroutines.runBlocking
 
 object Lettuce
@@ -18,6 +19,7 @@ fun prepare(tool: Knife, ingredient: Lettuce): Salad? = null
 // eitherTみたいなのがほしくなったりしないんだろうか
 suspend fun prepareLunch(): Salad? =
     nullable {
+        // nullがかえるのでこの式で終わる
         val lettuce = takeFoodFromRefrigerator().bind()
         val knife = getKnife().bind()
         prepare(knife, lettuce).bind()
@@ -50,4 +52,29 @@ suspend fun prepareEither(): Either<CookingException, Salad> =
 
 runBlocking {
     println(prepareEither())
+}
+
+// model
+sealed class ValidationError(val msg: String) {
+    data class DoesNotContain(val value: String) : ValidationError("Did not contain $value")
+    data class MaxLength(val value: Int) : ValidationError("Exceeded length of $value")
+    data class NotAnEmail(val reasons: Nel<ValidationError>) : ValidationError("Not a valid email")
+}
+
+data class FormField(val label: String, val value: String)
+data class Email(val value: String)
+
+sealed class Strategy {
+    object FailFast : Strategy()
+    object ErrorAccumulation : Strategy()
+}
+object Rules {
+    // Non Empty List(NEL)の制約を見ている
+    private fun FormField.contains(needle: String): ValidatedNel<ValidationError, FormField> =
+        if (value.contains(needle, false)) validNel()
+        else ValidationError.DoesNotContain(needle).invalidNel()
+
+    private fun FormField.maxLength(maxLength: Int): ValidatedNel<ValidationError, FormField> =
+        if (value.length <= maxLength) validNel()
+        else ValidationError.MaxLength(maxLength).invalidNel()
 }
