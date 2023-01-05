@@ -1,5 +1,7 @@
 package `kotlin-server-side-programming-practice`
 
+import kotlin.reflect.KProperty
+
 interface CalculationExecutor {
     val message: String
     fun calc(num1: Int, num2: Int): Int
@@ -22,8 +24,34 @@ class AddCalculationExecutor(private val calculationExecutor: CommonCalculationE
     }
 }
 
+
+class DelegateWithMessage<T> {
+    private var value: T? = null
+
+    operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
+        println("${property.name}を取得します")
+        return value!!
+    }
+
+    operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
+        println("${property.name}を設定します")
+        this.value = value
+    }
+}
+
+class Person {
+    var name : String by DelegateWithMessage()
+    var address : String by DelegateWithMessage()
+}
+
 fun main() {
     val executor = AddCalculationExecutor(CommonCalculationExecutor())
     executor.printStartMessage()
     println(executor.calc(8, 11))
+    val person = Person()
+    person.name = "taro"
+    person.address = "nihon"
+    println(person.name)
+    println(person.address)
+    println(person)
 }
