@@ -20,8 +20,9 @@ tasks.withType<Test> {
 dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")
     testImplementation("io.mockk:mockk:1.10.6")
-    implementation("org.apache.pdfbox:pdfbox:2.0.22")
+    implementation("org.apache.pdfbox:pdfbox:2.0.24")
     implementation(kotlin("stdlib-jdk8"))
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
 }
 
 tasks.withType<KotlinCompile>() {
