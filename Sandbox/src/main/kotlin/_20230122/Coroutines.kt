@@ -1,15 +1,12 @@
 package _20230122
 
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.async
+import kotlinx.coroutines.*
 
 fun main() {
     basic()
     runBlockingScopeBuilder()
     asyncScopeBuilder()
+    context()
 }
 
 // コルーチンの基本
@@ -55,5 +52,26 @@ private fun asyncScopeBuilder() {
         }
         println("calc")
         println("${result.await() + result2.await()}")
+    }
+}
+
+// CoroutineScope内でasyncやlaunchなどでCoroutineを立ち上げる
+// Coroutineの起動処理はJobを返却する
+// withContextでディスパッチャを指定することでどのスレッドで実行するか決定する
+
+private fun context() {
+    println(Thread.currentThread())
+    runBlocking {
+        launch {
+            delay(1000L)
+            println("launch")
+            println(Thread.currentThread())
+            withContext(Dispatchers.Default) {
+                println(Thread.currentThread())
+            }
+            withContext(Dispatchers.IO) {
+                println(Thread.currentThread())
+            }
+        }
     }
 }
