@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.4.0"
+    kotlin("jvm") version "1.5.0"
 }
 version = "1.0-SNAPSHOT"
 
@@ -22,7 +22,7 @@ dependencies {
     testImplementation("io.mockk:mockk:1.10.6")
     implementation("org.apache.pdfbox:pdfbox:2.0.24")
     implementation(kotlin("stdlib-jdk8"))
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
 }
 
 tasks.withType<KotlinCompile>() {
